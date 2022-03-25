@@ -20,3 +20,4 @@ Members of the team should strive to be as transparent as possible with each oth
 
 Signed:
 Barnett Lee bl29@illinois.edu
+Hao Qi haoqi3@illinois.edu
