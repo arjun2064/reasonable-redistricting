@@ -7,6 +7,7 @@
 Subquestions related to our leading question include:
 - Given all possible redistricting plans, what is the natural distribution of those plans?
 - Given a proposed redistricting plan, how can we determine if the plan is biased so as to detect gerrymandering?
+- What is the shortest path of precincts from one party-leaning precinct to opposing party-leaning precinct?
 
 To answer these questions, we aim to model the voting precincts as a graph problem and implement the redistricting algorithm in Recombination: A Family of Markov Chains for Redistricting (
 https://hdsr.mitpress.mit.edu/pub/1ds8ptxu/release/4). The metric we calculate from each redistricting plan is the percentage of Republican and Democrat votes in the 2018 US House Election. We then plot the natural distribution of the metric from the sampled redistricting plans. Plans closer to the mean are considered "fairer". We then make a variation of the algorithm by using a uniform spanning tree instead of a minimum spanning tree and compare the results of the two approaches.
@@ -67,7 +68,10 @@ To obtain our graph of precincts, we will use `maup` (https://github.com/mggg/ma
 ## Algorithms
 
 ### BFS Traversal
-Traverse through all precincts
+- Input: Start node and End Node
+- Output: Nodes traversed in search between start and end node
+- Big O: O(|V| + |E|)
+- To traverse and check graph
 
 ### Minimum Spanning Tree (Covered)
 - Prim's Algorithm
@@ -75,12 +79,13 @@ Traverse through all precincts
 - Output: MST
 - Big O: O(|E| log |V|)
 - Note: weights on the minimum spanning tree are randomly assigned as stated in the paper so as to sample the space of all the ways to partition a subgraph of precincts
+- If random assingment of edge weights doesn't work, we will assign edge weights based on the difference between party votes of the two connecting nodes
 
 ### Uniform Spanning Tree (Uncovered)
 - Wilson’s algorithm (https://en.wikipedia.org/wiki/Loop-erased_random_walk)
 - Input: Subgraph of precincts where two districts have been merged
 - Output: UST
-- Big O: O(V^2) ([Paper showing that this is an upper bound on the average running time](https://projecteuclid.org/journals/electronic-communications-in-probability/volume-5/issue-none/On-the-Cover-Time-of-Planar-Graphs/10.1214/ECP.v5-1022.pdf))
+- Big O: O(|V|^2) ([Paper showing that this is an upper bound on the average running time](https://projecteuclid.org/journals/electronic-communications-in-probability/volume-5/issue-none/On-the-Cover-Time-of-Planar-Graphs/10.1214/ECP.v5-1022.pdf))
 
 MST and UST will then be used in the ReCom algorithm as follows:
 1. start with a seed partitioning of precincts into n districts
