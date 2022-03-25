@@ -16,4 +16,7 @@ In case a team member is unable to complete their portion of the project, they m
 ### Time Commitment
 Each member of the team is expected to commit around 10 hours per week on the project. If time conflicts occur, this should be addressed in either meetings or in Discord to let other members know beforehand.
 ### Conflict Resolution
-Members of the team should strive to be as transparent as possible with each other in order to minimize any conflicts that may occur. This can vary anywhere from being unable to make a meeting or having an issue with a portion of the code. Each member of the team should seek to de-escalate conflicts should they come up and refocus the team to progress at the tasks at hand. Late members will be shamed by having the `Late` flair in Discord for 1 week.
+Members of the team should strive to be as transparent as possible with each other in order to minimize any conflicts that may occur. This can vary anywhere from being unable to make a meeting or having an issue with a portion of the code. Each member of the team should seek to de-escalate conflicts should they come up and refocus the team to progress at the tasks at hand.
+
+Signed:
+Barnett Lee bl29@illinois.edu
