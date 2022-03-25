@@ -80,14 +80,14 @@ Traverse through all precincts
 - Wilson’s algorithm (https://en.wikipedia.org/wiki/Loop-erased_random_walk)
 - Input: Subgraph of precincts where two districts have been merged
 - Output: UST
-- Big O: O(E^3)
+- Big O: O(V^2) ([Paper showing that this is an upper bound on the average running time](https://projecteuclid.org/journals/electronic-communications-in-probability/volume-5/issue-none/On-the-Cover-Time-of-Planar-Graphs/10.1214/ECP.v5-1022.pdf))
 
 MST and UST will then be used in the ReCom algorithm as follows:
 1. start with a seed partitioning of precincts into n districts
 2. randomly choose 2 districts
 3. merge 2 districts
 4. assign random weights to subgraph
-5. draw spanning tree on subgraph
+5. draw minimum spanning tree on subgraph
 6. cut an edge of spanning tree so that resulting partitions have balanced populations
 7. calculate metric for current plan eg. democratic/republican
 8. record this sample plan and metric
