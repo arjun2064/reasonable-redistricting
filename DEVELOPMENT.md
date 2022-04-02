@@ -1,0 +1,4 @@
+- Week 1 - Mar 28
+    - Create public interfaces for graph
+    - Start data ingestion code
+    - Start implementing BFS
