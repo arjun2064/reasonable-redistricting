@@ -7,4 +7,6 @@ struct Precinct {
     int population;
     int republicanVotes;
     int democraticVotes;
+
+    void test();
 };
