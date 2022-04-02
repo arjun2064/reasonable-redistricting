@@ -2,7 +2,7 @@
 
 using std::string;
 
-class Precinct {
+struct Precinct {
     string name;
     int population;
     int republicanVotes;
