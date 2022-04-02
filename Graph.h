@@ -1,4 +1,5 @@
 #include <vector>
+#include "Precinct.h"
 
 using std::vector;
 class Graph {
