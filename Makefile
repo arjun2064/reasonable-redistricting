@@ -14,10 +14,10 @@ DEBUG_NAME = debug
 all: $(EXE_NAME)
 
 $(EXE_NAME): $(CPP_FILES) $(H_FILES)
-	$(CXX) $(CXXFLAGS) $(CPP_FILES) -o $(EXE_NAME)
+	$(CXX) $(CXXFLAGS) main.cpp $(CPP_FILES) -o $(EXE_NAME)
 
 $(DEBUG_NAME): $(CPP_FILES) $(H_FILES)
-	$(CXX) $(CXXFLAGS) $(CPP_FILES) -o $(DEBUG_NAME)
+	$(CXX) $(CXXFLAGS) main.cpp $(CPP_FILES) -o $(DEBUG_NAME)
 
 clean:
 	rm $(EXE_NAME)
