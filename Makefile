@@ -10,6 +10,7 @@ H_FILES = $(wildcard *.h)
 
 EXE_NAME = recombination
 DEBUG_NAME = debug
+TEST_NAME = test
 
 all: $(EXE_NAME)
 
@@ -19,8 +20,10 @@ $(EXE_NAME): main.cpp $(CPP_FILES) $(H_FILES)
 $(DEBUG_NAME): main.cpp $(CPP_FILES) $(H_FILES)
 	$(CXX) $(DEBUGFLAGS) main.cpp $(CPP_FILES) -o $(DEBUG_NAME)
 
-clean:
-	rm $(EXE_NAME)
-	rm $(DEBUG_NAME)
+$(TEST_NAME): testing/test.cpp $(CPP_FILES) $(H_FILES)
+	$(CXX) $(DEBUGFLAGS) testing/test.cpp $(CPP_FILES) -o $(TEST_NAME)
 
-.PHONY: all debug clean
+clean:
+	rm -f $(EXE_NAME) $(DEBUG_NAME) $(TEST_NAME)
+
+.PHONY: all debug test clean
