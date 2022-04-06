@@ -1,13 +1,20 @@
 #include <vector>
+#include "Precinct.h"
 
 using std::vector;
 class Graph {
-    vector<vector<int>> edges;
-    vector<Precinct> precincts;
-    // nodes are uniquely identified by id/number
+  /*
+      nodes are uniquely identified by id/number
+      precincts, being vertexes, connected by edges
+  */
+  vector<Precinct> precincts;
 
-    // write BFS to a file
-    // to find node distance
-    void BFS(int start, int end);
+  // edges between precincts and connecting them
+  vector<vector<int>> edges;
+
+  // write BFS to a file
+  // to find node distance
+  void BFS(int start, int end);
+  void BFSComponent(int vertex);
 
 };
