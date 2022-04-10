@@ -2,3 +2,7 @@
     - Create public interfaces for graph
     - Start data ingestion code
     - Start implementing BFS
+- Week 2 - Apr 4
+    - Makefile created with Catch2 testing
+    - Still working on BFS implementation
+    - Started MST implementation
