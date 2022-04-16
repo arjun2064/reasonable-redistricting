@@ -6,3 +6,7 @@
     - Makefile created with Catch2 testing
     - Still working on BFS implementation
     - Started MST implementation
+- Week 3 - Apr 11
+    - Progress on the data ingestion from JSON though still WIP
+    - Not much other progress made this week
+    - Organising a team hackathon session before mid-point check in to get the features out like testing, ensuring that BFS works as intended and to ramp up work done
