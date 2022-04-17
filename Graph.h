@@ -15,6 +15,5 @@ class Graph {
   // write BFS to a file
   // to find node distance
   void BFS(int start, int end);
-  void BFSComponent(int vertex);
 
 };
