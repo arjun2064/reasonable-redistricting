@@ -35,6 +35,7 @@ class Partition {
 
         void minSpanningTree(int district);
         void uniformSpanningTree(int district);
-
         int calculatePopulations(int precinct);
+        void dfsRebuild(int district, int precinct);
+        void dfsRebuild(int district, int precinct, int exclude);
 };

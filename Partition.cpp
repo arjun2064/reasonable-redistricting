@@ -1,5 +1,6 @@
 #include "Partition.h"
 #include "DisjointSets.h"
+#include <iostream>
 #include <unordered_map>
 #include <stdexcept>
 #include <random>
@@ -16,6 +17,15 @@ Partition::Partition(Graph* graph, int numDistricts): graph(graph), numDistricts
     randomJoinInitialize();
     initializeDistrictAdjacencies();
     allocateCaches();
+
+    // for (int i = 0; i < graph->numPrecincts(); i++) {
+    //     std::cout << precinctToDistrict[i];
+    // }
+    // for (int i = 0; i < numDistricts; i++) {
+    //     for (int adj : districtAdjacencies[i]) {
+    //         std::cout << "(" << i << ", " << adj << ")" << std::endl;
+    //     }
+    // }
 }
 
 /**
@@ -55,8 +65,10 @@ void Partition::randomJoinInitialize() {
     unordered_map<int, int> idxMap;
     int districtIdx = 0;
     districtToPrecincts.resize(numDistricts);
+    precinctToDistrict.resize(numPrecincts);
     for (int i=0; i<numPrecincts; i++) {
         int rootIdx = dsets.find(i);
+        // std::cout << rootIdx << std::endl;
         if (!idxMap.count(rootIdx)) {
             idxMap[rootIdx] = districtIdx++;
         }
@@ -67,8 +79,8 @@ void Partition::randomJoinInitialize() {
 
 // Initialize the district adjacency sets
 void Partition::initializeDistrictAdjacencies() {
+    districtAdjacencies.resize(numDistricts);
     for (int district = 0; district < numDistricts; district++) {
-        districtAdjacencies[district].clear();
         for (int precinct : districtToPrecincts[district]) {
             for (int adjacentPrecinct : graph->getEdges()[precinct]) {
                 int adjacentDistrict = precinctToDistrict[adjacentPrecinct];
@@ -121,15 +133,39 @@ void Partition::recombination(int districtA, int districtB) {
 
     // Merging both districts into districtA
     for (int precinct : districtToPrecincts[districtB]) {
-        precinctToDistrict[districtB] = districtA;
+        precinctToDistrict[precinct] = districtA;
     }
     districtToPrecincts[districtA].insert(
         districtToPrecincts[districtA].end(),
-        districtToPrecincts[districtA].begin(),
+        districtToPrecincts[districtB].begin(),
         districtToPrecincts[districtB].end()
     );
+    districtToPrecincts[districtB].clear();
+
     minSpanningTree(districtA);
-    calculatePopulations(districtToPrecincts[districtA][0]);
+    int rootPrecinct = districtToPrecincts[districtA][0];
+    calculatePopulations(rootPrecinct);
+
+    // Clacluate mst splitting point
+    int totalPopulation = populationCache[rootPrecinct];
+    int splitPrecinct = populationCache[rootPrecinct];
+    for (int precinct : districtToPrecincts[districtA]) {
+        int currentDif = populationCache[splitPrecinct]*2 - totalPopulation;
+        int newDif = populationCache[precinct]*2 - totalPopulation;
+        if (abs(newDif) < abs(currentDif)) {
+            splitPrecinct = precinct;
+        }
+    }
+    double maxPopulation = totalPopulation * 0.55;
+    double minPopulation = totalPopulation * 0.45;
+    if (populationCache[splitPrecinct] > maxPopulation || populationCache[splitPrecinct] < minPopulation) {
+        // Some code to cancel the recombination, I'll do this later.
+    }
+
+    // Rebuild districts from tree
+    districtToPrecincts[districtA].clear();
+    dfsRebuild(districtA, rootPrecinct, splitPrecinct);
+    dfsRebuild(districtB, splitPrecinct);
 
     addDistrictAdjacencies(districtA);
     addDistrictAdjacencies(districtB);
@@ -159,7 +195,7 @@ void Partition::minSpanningTree(int district) {
             continue;
         visitedCache[precinct] = true;
         
-        for (int i = 0; i < edges[precinct].size(); i++) {
+        for (unsigned i = 0; i < edges[precinct].size(); i++) {
             int neighbor = edges[precinct][i];
             // Check if neighbor is in correct district and unvisited
             if (precinctToDistrict[neighbor] == district && !visitedCache[neighbor]) {
@@ -195,5 +231,22 @@ int Partition::calculatePopulations(int precinct) {
     populationCache[precinct] = graph->getPrecincts()[precinct].population;
     for (int child : treeCache[precinct]) {
         populationCache[precinct] += calculatePopulations(child);
+    }
+    return populationCache[precinct];
+}
+
+void Partition::dfsRebuild(int district, int precinct) {
+    districtToPrecincts[district].push_back(precinct);
+    precinctToDistrict[precinct] = district;
+    for (int child : treeCache[precinct]) {
+        dfsRebuild(child, precinct);
+    }
+}
+
+void Partition::dfsRebuild(int district, int precinct, int exclude) {
+    districtToPrecincts[district].push_back(precinct);
+    precinctToDistrict[precinct] = district;
+    for (int child : treeCache[precinct]) if (child != exclude) {
+        dfsRebuild(child, precinct);
     }
 }
