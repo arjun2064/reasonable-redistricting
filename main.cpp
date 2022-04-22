@@ -7,6 +7,8 @@ using std::cout;
 using std::endl;
 
 int main(int argc, char *argv[]) {
+    srand(time(NULL));
+
     Graph graph("cdata.txt");
     cout << graph.getPrecincts()[0].population << endl;
     cout << graph.getPrecincts()[0].democraticVotes << endl;

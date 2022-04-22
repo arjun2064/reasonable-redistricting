@@ -137,17 +137,53 @@ void Partition::recombination(int districtA, int districtB) {
 // Calculates the minimum spanning tree of a particular district
 void Partition::minSpanningTree(int district) {
     for (int precinct : districtToPrecincts[district]) {
+        visitedCache[precinct] = false;
         keyCache[precinct] = INT_MAX;
         parentCache[precinct] = -1;
         treeCache[precinct].clear();
     }
+    const vector<vector<int>>& edges = graph->getEdges();
+
     // pair structure should be (weight, index)
     priority_queue<ipair, vector<ipair>, std::greater<ipair>> pq;
     int startingPrecinct = districtToPrecincts[district][0];
     keyCache[startingPrecinct] = 0;
     pq.push(make_pair(keyCache[startingPrecinct], startingPrecinct));
     while (!pq.empty()) {
-        // Do stuff
+        int precinct = pq.top().second;
+        pq.pop();
+        if (visitedCache[precinct])
+            continue;
+        visitedCache[precinct] = true;
+        
+        for (int i = 0; i < edges[precinct].size(); i++) {
+            int neighbor = edges[precinct][i];
+            // Check if neighbor is in correct district and unvisited
+            if (precinctToDistrict[neighbor] == district && !visitedCache[neighbor]) {
+                // Since the weight of every edge is only read once during the execution
+                // of Prim's algorithm, choosing a random weight for the edge on the spot
+                // has the exact same effect as assigning random weights to the graph
+                // prior to running Prim's algorithm.
+                int randomWeight = rand();
+                if (randomWeight < keyCache[neighbor]) {
+                    keyCache[neighbor = randomWeight];
+                    pq.push(make_pair(randomWeight, neighbor));
+                }
+            }
+        }
+    }
+
+    for (int precinct : districtToPrecincts[district]) {
+        if (precinct == startingPrecinct) {
+            if (parentCache[precinct] != -1) {
+                throw std::runtime_error("Root node has parent");
+            }
+        } else {
+            if (parentCache[precinct] == -1) {
+                throw std::runtime_error("Tree is not connected");
+            }
+            treeCache[parentCache[precinct]].push_back(precinct);
+        }
     }
 }
 
