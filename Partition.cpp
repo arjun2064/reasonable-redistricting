@@ -12,6 +12,8 @@ typedef std::pair<int, int> ipair;
 Partition::Partition(Graph* graph, int numDistricts): graph(graph), numDistricts(numDistricts) {
     randomJoinInitialize();
 
+    // Initial contents of the weights don't matter, only the dimensions of the vectors.
+    weights = graph->getEdges();
 }
 
 void Partition::randomJoinInitialize() {
