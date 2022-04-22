@@ -21,6 +21,7 @@ Graph::Graph(string filename) {
 
 void Graph::loadFromFile(string filename) {
     ifstream fin(filename);
+    int numPrecincts;
     fin >> numPrecincts;
     for (int i = 0; i < numPrecincts; i++) {
         Precinct precinct;
@@ -82,4 +83,8 @@ const vector<Precinct>& Graph::getPrecincts() {
 
 const vector<vector<int>>& Graph::getEdges() {
     return edges;
+}
+
+int Graph::numPrecincts() {
+    return precincts.size();
 }

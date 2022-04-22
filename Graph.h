@@ -1,3 +1,5 @@
+#pragma once
+
 #include <vector>
 #include "Precinct.h"
 
@@ -10,12 +12,11 @@ class Graph {
         void loadFromFile(string filename);
         const vector<Precinct>& getPrecincts();
         const vector<vector<int>>& getEdges();
+        int numPrecincts();
         // write BFS to a file to find node distance
         int BFS(unsigned start, unsigned end);
 
     private:
-        int numPrecincts = 0;
-
         /*
             nodes are uniquely identified by id/number
             precincts, being vertexes, connected by edges
