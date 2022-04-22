@@ -2,6 +2,7 @@
 #include <queue>
 #include <iostream>
 #include <fstream>
+#include <climits>
 
 #include "Precinct.h"
 #include "Graph.h"
@@ -43,7 +44,7 @@ int Graph::BFS(unsigned start, unsigned end){
     //established temporary vector to keep track of visited nodes
     vector<bool> visited;
     vector<int> distance;
-    for(int i = 0; i < precincts.size(); i++){
+    for(size_t i = 0; i < precincts.size(); i++){
         visited.push_back(false);
         distance.push_back(-1);
     }
@@ -59,9 +60,9 @@ int Graph::BFS(unsigned start, unsigned end){
         if(!visited[cur]){
             visited[cur] = true;
 
-            for(int i = 0; i < edges[cur].size(); i++){
+            for(size_t i = 0; i < edges[cur].size(); i++){
                 //if there is an edge between the presincts
-                if(edges[cur][i] == end){
+                if((unsigned)edges[cur][i] == end){
                     //ctrl + LSquareBracket is <- 1 tab
                     cout << "PRESINCT " << end << " IS " <<  distance[cur] + 1 << " EDGES FROM " << start << "\n";
                     return distance[cur];
@@ -72,6 +73,7 @@ int Graph::BFS(unsigned start, unsigned end){
             }
         }
     }
+    return -1;
 }
 
 const vector<Precinct>& Graph::getPrecincts() {
