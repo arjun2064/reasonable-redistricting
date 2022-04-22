@@ -128,6 +128,8 @@ void Partition::recombination(int districtA, int districtB) {
         districtToPrecincts[districtA].begin(),
         districtToPrecincts[districtB].end()
     );
+    minSpanningTree(districtA);
+    calculatePopulations(districtToPrecincts[districtA][0]);
 
     addDistrictAdjacencies(districtA);
     addDistrictAdjacencies(districtB);
@@ -146,6 +148,7 @@ void Partition::minSpanningTree(int district) {
 
     // pair structure should be (weight, index)
     priority_queue<ipair, vector<ipair>, std::greater<ipair>> pq;
+    // Starting precinct is the first precinct in the list
     int startingPrecinct = districtToPrecincts[district][0];
     keyCache[startingPrecinct] = 0;
     pq.push(make_pair(keyCache[startingPrecinct], startingPrecinct));
@@ -187,18 +190,10 @@ void Partition::minSpanningTree(int district) {
     }
 }
 
-// void Partition::randomlyAssignWeights(int district) {
-//     for (int precinct : districtToPrecincts[district]) {
-//         auto& edges = graph->getEdges();
-//         for (unsigned i = 0; i < edges[precinct].size(); i++) {
-//             int neighbor = edges[precinct][i];
-//             // Having two different weights for the same edge depending on which
-//             // side you go from shouldn't change the distribution because prim's
-//             // algorithm for creating an mst will only ever check the weight
-//             // in one direction
-//             if (precinctToDistrict[neighbor] == district) {
-//                 weights[precinct][i] = rand();
-//             }
-//         }
-//     }
-// }
+// Cache the population size of each subtree
+int Partition::calculatePopulations(int precinct) {
+    populationCache[precinct] = graph->getPrecincts()[precinct].population;
+    for (int child : treeCache[precinct]) {
+        populationCache[precinct] += calculatePopulations(child);
+    }
+}

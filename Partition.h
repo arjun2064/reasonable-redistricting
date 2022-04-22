@@ -25,15 +25,16 @@ class Partition {
         vector<int> keyCache;
         vector<int> parentCache;
         vector<vector<int>> treeCache;
-
+        vector<int> populationCache;
 
         void randomJoinInitialize();
         void initializeDistrictAdjacencies();
         void removeDistrictAdjacencies(int district);
         void addDistrictAdjacencies(int district);
         void allocateCaches();
-        
-        // void randomlyAssignWeights(int district);
+
         void minSpanningTree(int district);
         void uniformSpanningTree(int district);
+
+        int calculatePopulations(int precinct);
 };
