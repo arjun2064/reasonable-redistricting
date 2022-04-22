@@ -38,7 +38,7 @@ void Graph::loadFromFile(string filename) {
     }
 }
 
-int Graph::BFS(int start, int end){
+int Graph::BFS(unsigned start, unsigned end){
 
     //established temporary vector to keep track of visited nodes
     vector<bool> visited;
