@@ -1,5 +1,3 @@
-#pragma once
-
 #include "DisjointSets.h"
 
 DisjointSets::DisjointSets(int size) {
