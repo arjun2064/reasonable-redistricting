@@ -4,17 +4,18 @@
 #include <stdexcept>
 #include <random>
 #include <algorithm>
+#include <queue>
+#include <limits.h>
 
+typedef std::pair<int, int> ipair;
 using std::make_pair;
 using std::unordered_map;
-typedef std::pair<int, int> ipair;
+using std::priority_queue;
 
 Partition::Partition(Graph* graph, int numDistricts): graph(graph), numDistricts(numDistricts) {
-    // Initial contents of the weights don't matter, only the dimensions of the vectors.
-    weights = graph->getEdges();
-
     randomJoinInitialize();
     initializeDistrictAdjacencies();
+    allocateCaches();
 }
 
 /**
@@ -36,7 +37,7 @@ void Partition::randomJoinInitialize() {
     }
 
     // shuffle edge list
-    auto rng = std::default_random_engine {};
+    static auto rng = std::default_random_engine(time(NULL));
     std::shuffle(edges.begin(), edges.end(), rng);
     
     // merge randomly until you have the right number of districts
@@ -101,13 +102,67 @@ void Partition::addDistrictAdjacencies(int district) {
     }
 }
 
+void Partition::allocateCaches() {
+    visitedCache.resize(graph->numPrecincts());
+    keyCache.resize(graph->numPrecincts());
+    parentCache.resize(graph->numPrecincts());
+    treeCache.resize(graph->numPrecincts());
+}
+
 // Do a random recombination of two districts
 void Partition::recombination() {
-    // todo
+    // todo some other time
 }
 
 // Do a recombination of two particular districts
 void Partition::recombination(int districtA, int districtB) {
     removeDistrictAdjacencies(districtA);
     removeDistrictAdjacencies(districtB);
+
+    // Merging both districts into districtA
+    for (int precinct : districtToPrecincts[districtB]) {
+        precinctToDistrict[districtB] = districtA;
+    }
+    districtToPrecincts[districtA].insert(
+        districtToPrecincts[districtA].end(),
+        districtToPrecincts[districtA].begin(),
+        districtToPrecincts[districtB].end()
+    );
+
+    addDistrictAdjacencies(districtA);
+    addDistrictAdjacencies(districtB);
 }
+
+
+// Calculates the minimum spanning tree of a particular district
+void Partition::minSpanningTree(int district) {
+    for (int precinct : districtToPrecincts[district]) {
+        keyCache[precinct] = INT_MAX;
+        parentCache[precinct] = -1;
+        treeCache[precinct].clear();
+    }
+    // pair structure should be (weight, index)
+    priority_queue<ipair, vector<ipair>, std::greater<ipair>> pq;
+    int startingPrecinct = districtToPrecincts[district][0];
+    keyCache[startingPrecinct] = 0;
+    pq.push(make_pair(keyCache[startingPrecinct], startingPrecinct));
+    while (!pq.empty()) {
+        // Do stuff
+    }
+}
+
+// void Partition::randomlyAssignWeights(int district) {
+//     for (int precinct : districtToPrecincts[district]) {
+//         auto& edges = graph->getEdges();
+//         for (unsigned i = 0; i < edges[precinct].size(); i++) {
+//             int neighbor = edges[precinct][i];
+//             // Having two different weights for the same edge depending on which
+//             // side you go from shouldn't change the distribution because prim's
+//             // algorithm for creating an mst will only ever check the weight
+//             // in one direction
+//             if (precinctToDistrict[neighbor] == district) {
+//                 weights[precinct][i] = rand();
+//             }
+//         }
+//     }
+// }

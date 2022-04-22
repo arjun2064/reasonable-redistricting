@@ -14,16 +14,26 @@ class Partition {
     private:
         Graph* graph;
         int numDistricts;
+
         vector<vector<int>> districtToPrecincts;
         vector<int> precinctToDistrict;
         vector<unordered_set<int>> districtAdjacencies;
-        vector<vector<int>> weights;
+
+        // Some preallocated arrays used as a cache during recombination
+        // vector<vector<int>> weights;
+        vector<int> visitedCache;
+        vector<int> keyCache;
+        vector<int> parentCache;
+        vector<vector<int>> treeCache;
+
 
         void randomJoinInitialize();
         void initializeDistrictAdjacencies();
         void removeDistrictAdjacencies(int district);
         void addDistrictAdjacencies(int district);
-
+        void allocateCaches();
+        
+        // void randomlyAssignWeights(int district);
         void minSpanningTree(int district);
         void uniformSpanningTree(int district);
 };
