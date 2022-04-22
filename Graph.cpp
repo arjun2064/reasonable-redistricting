@@ -1,6 +1,7 @@
 #include <vector>
 #include <queue>
 #include <iostream>
+#include <fstream>
 
 #include "Precinct.h"
 #include "Graph.h"
@@ -21,7 +22,19 @@ void Graph::loadFromFile(string filename) {
     ifstream fin(filename);
     fin >> numPrecincts;
     for (int i = 0; i < numPrecincts; i++) {
-        
+        Precinct precinct;
+        precinct.id = i;
+        fin >> precinct.population;
+        fin >> precinct.democraticVotes;
+        fin >> precinct.republicanVotes;
+        int numNeighbors;
+        fin >> numNeighbors;
+        vector<int> neighbors(numNeighbors);
+        for (int j = 0; j < numNeighbors; j++) {
+            fin >> neighbors[j];
+        }
+        precincts.push_back(precinct);
+        edges.push_back(neighbors);
     }
 }
 
