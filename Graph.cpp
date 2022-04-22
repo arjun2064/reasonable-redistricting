@@ -21,6 +21,7 @@ Graph::Graph(string filename) {
 
 void Graph::loadFromFile(string filename) {
     ifstream fin(filename);
+    int numPrecincts;
     fin >> numPrecincts;
     for (int i = 0; i < numPrecincts; i++) {
         Precinct precinct;
