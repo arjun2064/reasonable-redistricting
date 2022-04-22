@@ -10,6 +10,8 @@ class Graph {
         void loadFromFile(string filename);
         const vector<Precinct>& getPrecincts();
         const vector<vector<int>>& getEdges();
+        // write BFS to a file to find node distance
+        int BFS(unsigned start, unsigned end);
 
     private:
         int numPrecincts = 0;
@@ -22,8 +24,4 @@ class Graph {
 
         // edges between precincts and connecting them
         vector<vector<int>> edges;
-
-        // write BFS to a file
-        // to find node distance
-        int BFS(unsigned start, unsigned end);
 };

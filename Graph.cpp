@@ -55,6 +55,7 @@ int Graph::BFS(unsigned start, unsigned end){
 
     while(!search.empty()){
         int cur = search.front();
+        search.pop();
 
         // otherwise, if not searched, set searched and add everything in connected
         if(!visited[cur]){
@@ -64,8 +65,7 @@ int Graph::BFS(unsigned start, unsigned end){
                 //if there is an edge between the presincts
                 if((unsigned)edges[cur][i] == end){
                     //ctrl + LSquareBracket is <- 1 tab
-                    cout << "PRESINCT " << end << " IS " <<  distance[cur] + 1 << " EDGES FROM " << start << "\n";
-                    return distance[cur];
+                    return distance[cur] + 1;
                 }
 
                 search.push(edges[cur][i]);
