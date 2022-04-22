@@ -1,4 +1,5 @@
 #include "DisjointSets.h"
+#include <iostream>
 
 DisjointSets::DisjointSets(int size) {
     parents.resize(size, -1);
@@ -31,11 +32,11 @@ void DisjointSets::join(int a, int b) {
 
     // Reassign parent of smaller tree to merge
     if (-parents[a] < -parents[b]) {
-        parents[b] -= parents[a];
+        parents[b] += parents[a];
         parents[a] = b;
     } else {
+        parents[a] += parents[b];
         parents[b] = a;
-        parents[a] -= parents[b];
     }
     numSets--;
 }
