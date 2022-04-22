@@ -82,3 +82,7 @@ const vector<Precinct>& Graph::getPrecincts() {
 const vector<vector<int>>& Graph::getEdges() {
     return edges;
 }
+
+int Graph::numPrecincts() {
+    return precincts.size();
+}
