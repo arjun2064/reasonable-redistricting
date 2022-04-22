@@ -1,11 +1,17 @@
 #include <vector>
 #include "Precinct.h"
 
+using std::string;
 using std::vector;
 class Graph {
     public:
-        
+        Graph();
+        Graph(string filename);
+        void loadFromFile(string filename);
+
     private:
+        int numPrecincts = 0;
+
         /*
             nodes are uniquely identified by id/number
             precincts, being vertexes, connected by edges

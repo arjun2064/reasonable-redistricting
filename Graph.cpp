@@ -8,6 +8,14 @@
 using std::vector;
 using std::queue;
 using std::cout;
+using std::endl;
+using std::ifstream;
+
+Graph::Graph() {}
+
+Graph::Graph(string filename) {
+    loadFromFile(filename);
+}
 
 void Graph::BFS(int start, int end){
 
