@@ -6,10 +6,11 @@
 using std::vector;
 class Partition {
     public:
-        Partition(Graph graph, int numDivisions);
+        Partition(Graph graph, int numDistricts);
+        void randomJoinInitialize();
     private:
-        const Graph graph;
-        const int numDivisions;
+        Graph* graph;
+        int numDistricts;
         vector<vector<int>> districts;
         vector<vector<int>> weights;
         void recom();
