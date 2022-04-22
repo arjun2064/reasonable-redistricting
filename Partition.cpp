@@ -9,7 +9,7 @@ using std::make_pair;
 using std::unordered_map;
 typedef std::pair<int, int> ipair;
 
-Partition::Partition(Graph graph, int numDistricts): graph(&graph), numDistricts(numDistricts) {
+Partition::Partition(Graph* graph, int numDistricts): graph(graph), numDistricts(numDistricts) {
     randomJoinInitialize();
 
 }

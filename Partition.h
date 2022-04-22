@@ -6,7 +6,7 @@
 using std::vector;
 class Partition {
     public:
-        Partition(Graph graph, int numDistricts);
+        Partition(Graph* graph, int numDistricts);
         void randomJoinInitialize();
     private:
         Graph* graph;
