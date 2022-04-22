@@ -17,6 +17,14 @@ Graph::Graph(string filename) {
     loadFromFile(filename);
 }
 
+void Graph::loadFromFile(string filename) {
+    ifstream fin(filename);
+    fin >> numPrecincts;
+    for (int i = 0; i < numPrecincts; i++) {
+        
+    }
+}
+
 void Graph::BFS(int start, int end){
 
     //established temporary vector to keep track of visited nodes
