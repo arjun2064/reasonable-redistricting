@@ -8,6 +8,8 @@ class Graph {
         Graph();
         Graph(string filename);
         void loadFromFile(string filename);
+        const vector<Precinct>& getPrecincts();
+        const vector<vector<int>>& getEdges();
 
     private:
         int numPrecincts = 0;
@@ -23,5 +25,5 @@ class Graph {
 
         // write BFS to a file
         // to find node distance
-        void BFS(int start, int end);
+        void BFS(unsigned start, unsigned end);
 };

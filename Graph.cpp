@@ -38,12 +38,12 @@ void Graph::loadFromFile(string filename) {
     }
 }
 
-void Graph::BFS(int start, int end){
+void Graph::BFS(unsigned start, unsigned end){
 
     //established temporary vector to keep track of visited nodes
     vector<int> visited;
     vector<int> distance;
-    for(int i = 0; i < precincts.size(); i++){
+    for(unsigned i = 0; i < precincts.size(); i++){
         visited.push_back(-1);
         distance.push_back(-1);
     }
@@ -59,7 +59,7 @@ void Graph::BFS(int start, int end){
         if(visited[cur] == -1){
             visited[cur] = 1;
 
-            for(int i = 0; i < edges[cur].size(); i++){
+            for(unsigned i = 0; i < edges[cur].size(); i++){
                 //if there is an edge between the presincts
                 if(edges[cur][i] == 1){
                     if(i == end){
@@ -75,4 +75,10 @@ void Graph::BFS(int start, int end){
     }
 }
 
-//
+const vector<Precinct>& Graph::getPrecincts() {
+    return precincts;
+}
+
+const vector<vector<int>>& Graph::getEdges() {
+    return edges;
+}
