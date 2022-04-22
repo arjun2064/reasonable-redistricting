@@ -2,6 +2,7 @@
 #include <queue>
 #include <iostream>
 #include <fstream>
+#include <climits>
 
 #include "Precinct.h"
 #include "Graph.h"
@@ -38,13 +39,13 @@ void Graph::loadFromFile(string filename) {
     }
 }
 
-void Graph::BFS(unsigned start, unsigned end){
+int Graph::BFS(unsigned start, unsigned end){
 
     //established temporary vector to keep track of visited nodes
-    vector<int> visited;
+    vector<bool> visited;
     vector<int> distance;
-    for(unsigned i = 0; i < precincts.size(); i++){
-        visited.push_back(-1);
+    for(size_t i = 0; i < precincts.size(); i++){
+        visited.push_back(false);
         distance.push_back(-1);
     }
     distance[start] = 0;
@@ -54,25 +55,25 @@ void Graph::BFS(unsigned start, unsigned end){
 
     while(!search.empty()){
         int cur = search.front();
+        search.pop();
 
         // otherwise, if not searched, set searched and add everything in connected
-        if(visited[cur] == -1){
-            visited[cur] = 1;
+        if(!visited[cur]){
+            visited[cur] = true;
 
-            for(unsigned i = 0; i < edges[cur].size(); i++){
+            for(size_t i = 0; i < edges[cur].size(); i++){
                 //if there is an edge between the presincts
-                if(edges[cur][i] == 1){
-                    if(i == end){
-                        cout << "PRESINCT " << end << " IS " <<  distance[cur] + 1 << " EDGES FROM " << start << "\n";
-                        return;
-                    }
-
-                    search.push(i);
-                    distance[i] = distance[cur] + 1;
+                if((unsigned)edges[cur][i] == end){
+                    //ctrl + LSquareBracket is <- 1 tab
+                    return distance[cur] + 1;
                 }
+
+                search.push(edges[cur][i]);
+                distance[edges[cur][i]] = distance[cur] + 1;
             }
         }
     }
+    return -1;
 }
 
 const vector<Precinct>& Graph::getPrecincts() {
