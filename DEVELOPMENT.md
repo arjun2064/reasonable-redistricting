@@ -10,3 +10,8 @@
     - Progress on the data ingestion from JSON though still WIP
     - Not much other progress made this week
     - Organising a team hackathon session before mid-point check in to get the features out like testing, ensuring that BFS works as intended and to ramp up work done
+- Week 4 - Apr 18
+    - Data parser complete
+    - Implement MST
+    - Start Recomb implementation
+    - Mid point checkin
