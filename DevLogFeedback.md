@@ -15,3 +15,9 @@ Nice work. You guys should be on the right track. For the mid-checkin, remember 
 PASS
 
 Nice work. Remember to write test cases for both BFS and data parsing. Other than that, I will see you at the mid-checkin.
+
+### Week April 18 - April 24
+
+PASS
+
+Nice work. Good job on the mid-checkin.
