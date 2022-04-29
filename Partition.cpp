@@ -241,7 +241,7 @@ void Partition::dfsRebuild(int district, int precinct) {
     districtToPrecincts[district].push_back(precinct);
     precinctToDistrict[precinct] = district;
     for (int child : treeCache[precinct]) {
-        dfsRebuild(child, precinct);
+        dfsRebuild(district, child);
     }
 }
 
@@ -249,6 +249,6 @@ void Partition::dfsRebuild(int district, int precinct, int exclude) {
     districtToPrecincts[district].push_back(precinct);
     precinctToDistrict[precinct] = district;
     for (int child : treeCache[precinct]) if (child != exclude) {
-        dfsRebuild(child, precinct);
+        dfsRebuild(district, child, exclude);
     }
 }
