@@ -119,6 +119,7 @@ void Partition::allocateCaches() {
     keyCache.resize(graph->numPrecincts());
     parentCache.resize(graph->numPrecincts());
     treeCache.resize(graph->numPrecincts());
+    populationCache.resize(graph->numPrecincts());
 }
 
 // Do a random recombination of two districts
@@ -148,7 +149,7 @@ void Partition::recombination(int districtA, int districtB) {
 
     // Clacluate mst splitting point
     int totalPopulation = populationCache[rootPrecinct];
-    int splitPrecinct = populationCache[rootPrecinct];
+    int splitPrecinct = rootPrecinct;
     for (int precinct : districtToPrecincts[districtA]) {
         int currentDif = populationCache[splitPrecinct]*2 - totalPopulation;
         int newDif = populationCache[precinct]*2 - totalPopulation;
@@ -205,7 +206,8 @@ void Partition::minSpanningTree(int district) {
                 // prior to running Prim's algorithm.
                 int randomWeight = rand();
                 if (randomWeight < keyCache[neighbor]) {
-                    keyCache[neighbor = randomWeight];
+                    keyCache[neighbor] = randomWeight;
+                    parentCache[neighbor] = precinct;
                     pq.push(make_pair(randomWeight, neighbor));
                 }
             }

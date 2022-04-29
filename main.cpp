@@ -11,4 +11,5 @@ int main(int argc, char *argv[]) {
 
     Graph graph("cdata.txt");
     Partition partition(&graph, 10);
+    partition.recombination(0, 1);
 }
