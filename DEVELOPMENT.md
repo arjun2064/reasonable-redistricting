@@ -15,3 +15,7 @@
     - Implement MST
     - Start Recomb implementation
     - Mid point checkin
+- Week 5 - Apr 18
+    - Successfully generate histogram showing natural distribution for mean median score
+    - Implementing last algorithm of uniform spanning tree
+    - Finishing up materials for submission
