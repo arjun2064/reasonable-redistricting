@@ -17,6 +17,8 @@ class Partition {
         void minSpanningTree(int district, std::function<int(int, int)> getEdgeWeight, int startingPrecinctIdx = 0);
 
         vector<vector<int>>& getTreeCache();
+        
+        enum SpanningTreeAlgorithm { MST, WILSON };
     private:
         Graph* graph;
         int numDistricts;
@@ -39,7 +41,8 @@ class Partition {
         void addDistrictAdjacencies(int district);
         void allocateCaches();
 
-        void uniformSpanningTree(int district);
+        void minSpanningTree(int district);
+        void wilsonTree(int district);
         int calculatePopulations(int precinct);
         void dfsRebuild(int district, int precinct);
         void dfsRebuild(int district, int precinct, int exclude);
