@@ -214,8 +214,52 @@ void Partition::minSpanningTree(int district) {
         }
     }
 
+    // Construct treeCache from parentCache
     for (int precinct : districtToPrecincts[district]) {
         if (precinct == startingPrecinct) {
+            if (parentCache[precinct] != -1) {
+                throw std::runtime_error("Root node has parent");
+            }
+        } else {
+            if (parentCache[precinct] == -1) {
+                throw std::runtime_error("Tree is not connected");
+            }
+            treeCache[parentCache[precinct]].push_back(precinct);
+        }
+    }
+}
+
+void Partition::wilsonTree(int district) {
+    for (int precinct : districtToPrecincts[district]) {
+        visitedCache[precinct] = false;
+        parentCache[precinct] = -1;
+        treeCache[precinct].clear();
+    }
+    const vector<vector<int>>& edges = graph->getEdges();
+    int root = districtToPrecincts[district][0];
+    visitedCache[root] = true;
+    for (int pathStart : districtToPrecincts[district]) {
+        if (visitedCache[pathStart]) {
+            continue;
+        }
+        int precinct = pathStart;
+        while (true) {
+            int neighbor = edges[precinct][rand() % edges[district].size()];
+            if (visitedCache[neighbor]) {
+                break;
+            }
+            parentCache[precinct] = neighbor;
+        }
+        precinct = pathStart;
+        while (!visitedCache[precinct]) {
+            visitedCache[precinct] = true;
+            precinct = parentCache[precinct];
+        }
+    }
+
+    // Construct treeCache from parentCache
+    for (int precinct : districtToPrecincts[district]) {
+        if (precinct == root) {
             if (parentCache[precinct] != -1) {
                 throw std::runtime_error("Root node has parent");
             }

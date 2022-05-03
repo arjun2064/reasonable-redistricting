@@ -11,6 +11,7 @@ class Partition {
         Partition(Graph* graph, int numDistricts);
         void recombination();
         void recombination(int districtA, int districtB);
+        enum SpanningTreeAlgorithm { MST, WILSON };
     private:
         Graph* graph;
         int numDistricts;
@@ -34,6 +35,7 @@ class Partition {
         void allocateCaches();
 
         void minSpanningTree(int district);
+        void wilsonTree(int district);
         void uniformSpanningTree(int district);
         int calculatePopulations(int precinct);
         void dfsRebuild(int district, int precinct);
