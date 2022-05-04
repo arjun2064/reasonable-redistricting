@@ -10,7 +10,7 @@ using std::unordered_set;
 class Partition {
     public:
         enum SpanningTreeAlgorithm { MST, WILSON };
-        
+
         Partition(Graph* graph, int numDistricts, SpanningTreeAlgorithm treeAlgorithm);
         void recombination();
         void recombination(int districtA, int districtB);
@@ -18,6 +18,7 @@ class Partition {
         float getMeanMedian();
         void minSpanningTree(int district, std::function<int(int, int)> getEdgeWeight, int startingPrecinctIdx = 0);
         void wilsonTree(int district);
+        int getPopulation(int district);
 
         vector<vector<int>>& getTreeCache();
     private:
@@ -37,10 +38,7 @@ class Partition {
         vector<vector<int>> treeCache;
         vector<int> populationCache;
 
-        void randomJoinInitialize();
-        void initializeDistrictAdjacencies();
-        void removeDistrictAdjacencies(int district);
-        void addDistrictAdjacencies(int district);
+        void partitionInitialize();
         void allocateCaches();
 
         int calculatePopulations(int precinct);
