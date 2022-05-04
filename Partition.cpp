@@ -12,6 +12,8 @@ typedef std::pair<int, int> ipair;
 using std::make_pair;
 using std::unordered_map;
 using std::priority_queue;
+using std::pair;
+using std::sort;
 
 Partition::Partition(Graph* graph, int numDistricts): graph(graph), numDistricts(numDistricts) {
     randomJoinInitialize();
@@ -124,7 +126,21 @@ void Partition::allocateCaches() {
 
 // Do a random recombination of two districts
 void Partition::recombination() {
-    // todo some other time
+    vector<ipair> edges;
+    for(int i = 0; i < (int) graph->getEdges().size(); ++i) {
+        for(int j: graph->getEdges()[i]){
+            // ensure precincts are from different districts
+            if (precinctToDistrict[i] != precinctToDistrict[j]) {
+                edges.push_back({i, j});
+            }
+        }
+    }
+
+    ipair randomEdge = edges[rand() % (edges.size())];
+    int district1 = precinctToDistrict[randomEdge.first];
+    int district2 = precinctToDistrict[randomEdge.second];
+
+    recombination(district1, district2);
 }
 
 // Do a recombination of two particular districts
@@ -251,4 +267,49 @@ void Partition::dfsRebuild(int district, int precinct, int exclude) {
     for (int child : treeCache[precinct]) if (child != exclude) {
         dfsRebuild(district, child, exclude);
     }
+}
+
+float Partition::getMeanMedian() {
+
+    // calculate % votes
+    // democrat 0, republican 1
+    // first is democratic, second is republican
+    vector<float> percentageVotes;
+    for (int district = 0; district < numDistricts; district++) {
+        vector<int> precincts = districtToPrecincts[district];
+
+        // votes per district
+        int democraticVotes = 0, republicanVotes = 0;
+        for (auto& precinctId: precincts) {
+            Precinct precinct = graph->getPrecincts()[precinctId];
+            democraticVotes += precinct.democraticVotes;
+            republicanVotes += precinct.republicanVotes;
+        }
+    
+        int totalVotes = democraticVotes + republicanVotes;
+        percentageVotes.push_back(((float) republicanVotes)/totalVotes);
+    }
+
+    // calculate median
+    sort(percentageVotes.begin(), percentageVotes.end());
+
+    float median = 0;
+    // even
+    if(percentageVotes.size() % 2 == 0) {
+        median = 0.5 * (
+            percentageVotes[percentageVotes.size()/2 - 1] 
+            + percentageVotes[percentageVotes.size()/2]
+        );
+    // odd
+    } else {
+        median = percentageVotes[percentageVotes.size() / 2];
+    }
+
+    float total = 0;
+    for(auto& percentageVote: percentageVotes) {
+        total += percentageVote;
+    }
+    float mean = total/percentageVotes.size();
+
+    return median - mean;
 }

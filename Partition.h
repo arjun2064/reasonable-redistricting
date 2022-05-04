@@ -11,6 +11,8 @@ class Partition {
         Partition(Graph* graph, int numDistricts);
         void recombination();
         void recombination(int districtA, int districtB);
+        // calculate mean median score for current partition state
+        float getMeanMedian();
     private:
         Graph* graph;
         int numDistricts;
