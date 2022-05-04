@@ -15,7 +15,7 @@ using std::priority_queue;
 using std::pair;
 using std::sort;
 
-Partition::Partition(Graph* graph, int numDistricts): graph(graph), numDistricts(numDistricts) {
+Partition::Partition(Graph* graph, int numDistricts, SpanningTreeAlgorithm treeAlgorithm): graph(graph), numDistricts(numDistricts), treeAlgorithm(treeAlgorithm) {
     randomJoinInitialize();
     initializeDistrictAdjacencies();
     allocateCaches();

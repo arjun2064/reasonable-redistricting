@@ -11,7 +11,7 @@ int main(int argc, char *argv[]) {
     srand(time(NULL));
 
     Graph graph("cdata.txt");
-    Partition partition(&graph, 10);
+    Partition partition(&graph, 10, Partition::SpanningTreeAlgorithm::WILSON);
 
     // dry run to reach equilibrium convergence
     for (int i = 0; i < 20000; ++i) {

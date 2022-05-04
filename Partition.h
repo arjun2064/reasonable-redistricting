@@ -9,7 +9,9 @@ using std::vector;
 using std::unordered_set;
 class Partition {
     public:
-        Partition(Graph* graph, int numDistricts);
+        enum SpanningTreeAlgorithm { MST, WILSON };
+        
+        Partition(Graph* graph, int numDistricts, SpanningTreeAlgorithm treeAlgorithm);
         void recombination();
         void recombination(int districtA, int districtB);
         // calculate mean median score for current partition state
@@ -18,11 +20,10 @@ class Partition {
         void wilsonTree(int district);
 
         vector<vector<int>>& getTreeCache();
-        
-        enum SpanningTreeAlgorithm { MST, WILSON };
     private:
         Graph* graph;
         int numDistricts;
+        SpanningTreeAlgorithm treeAlgorithm;
 
         vector<vector<int>> districtToPrecincts;
         vector<int> precinctToDistrict;
