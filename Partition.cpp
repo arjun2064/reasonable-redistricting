@@ -15,104 +15,38 @@ using std::priority_queue;
 using std::pair;
 using std::sort;
 
-Partition::Partition(Graph* graph, int numDistricts): graph(graph), numDistricts(numDistricts) {
-    randomJoinInitialize();
-    initializeDistrictAdjacencies();
+Partition::Partition(Graph* graph, int numDistricts, SpanningTreeAlgorithm treeAlgorithm): graph(graph), numDistricts(numDistricts), treeAlgorithm(treeAlgorithm) {
     allocateCaches();
-
-    // for (int i = 0; i < graph->numPrecincts(); i++) {
-    //     std::cout << precinctToDistrict[i];
-    // }
-    // for (int i = 0; i < numDistricts; i++) {
-    //     for (int adj : districtAdjacencies[i]) {
-    //         std::cout << "(" << i << ", " << adj << ")" << std::endl;
-    //     }
-    // }
+    partitionInitialize();
 }
 
 /**
  * Initializes partition by randomly joining adjacent precincts
  * until there is the right number of districts
  */
-void Partition::randomJoinInitialize() {
+void Partition::partitionInitialize() {
     int numPrecincts = graph->numPrecincts();
     if (numPrecincts < numDistricts) {
         throw std::runtime_error("Too few precincts");
     }
-
-    // create list of edges
-    vector<ipair> edges;
-    for (int i = 0; i < numPrecincts; i++) {
-        for (auto j : graph->getEdges()[i]) {
-            edges.push_back(make_pair(i, j));
-        }
-    }
-
-    // shuffle edge list
-    static auto rng = std::default_random_engine(time(NULL));
-    std::shuffle(edges.begin(), edges.end(), rng);
-    
-    // merge randomly until you have the right number of districts
-    DisjointSets dsets(numPrecincts);
-    unsigned edgeIdx = 0;
-    while (dsets.getNumSets() > numDistricts) {
-        if (edgeIdx > edges.size()) {
-            throw std::runtime_error("Graph consists of too many distinct islands");
-        }
-        ipair edge = edges[edgeIdx++];
-        dsets.join(edge.first, edge.second);
-    }
-
-    // collect each the precincts of each district into vectors
-    unordered_map<int, int> idxMap;
-    int districtIdx = 0;
     districtToPrecincts.resize(numDistricts);
     precinctToDistrict.resize(numPrecincts);
+
     for (int i=0; i<numPrecincts; i++) {
-        int rootIdx = dsets.find(i);
-        // std::cout << rootIdx << std::endl;
-        if (!idxMap.count(rootIdx)) {
-            idxMap[rootIdx] = districtIdx++;
-        }
-        precinctToDistrict[i] = idxMap[rootIdx];
-        districtToPrecincts[idxMap[rootIdx]].push_back(i);
+        districtToPrecincts[0].push_back(i);
+        precinctToDistrict[i] = 0;
     }
-}
-
-// Initialize the district adjacency sets
-void Partition::initializeDistrictAdjacencies() {
-    districtAdjacencies.resize(numDistricts);
-    for (int district = 0; district < numDistricts; district++) {
-        for (int precinct : districtToPrecincts[district]) {
-            for (int adjacentPrecinct : graph->getEdges()[precinct]) {
-                int adjacentDistrict = precinctToDistrict[adjacentPrecinct];
-                if (adjacentDistrict != district) {
-                    districtAdjacencies[district].insert(adjacentDistrict);
-                }
+    for (int i=1; i<numDistricts; i++) {
+        int maxDistrict = 0;
+        int maxPopulation = getPopulation(0);
+        for (int j=1; j<i; j++) {
+            int jPopulation = getPopulation(j);
+            if (jPopulation > maxPopulation) {
+                maxDistrict = j;
+                maxPopulation = jPopulation;
             }
         }
-    }
-}
-
-// Remove all adjacency relationships for a particular district
-void Partition::removeDistrictAdjacencies(int district) {
-    for (int adjacentDistrict : districtAdjacencies[district]) {
-        districtAdjacencies[adjacentDistrict].erase(district);
-    }
-    districtAdjacencies[district].clear();
-}
-
-// Calculate and add all adjacency relationships for a particular district
-void Partition::addDistrictAdjacencies(int district) {
-    districtAdjacencies[district].clear();
-    for (int precinct : districtToPrecincts[district]) {
-        for (int adjacentPrecinct : graph->getEdges()[precinct]) {
-            int adjacentDistrict = precinctToDistrict[adjacentPrecinct];
-            if (adjacentDistrict != district) {
-                districtAdjacencies[district].insert(adjacentDistrict);
-                districtAdjacencies[adjacentDistrict].insert(district);
-            }
-        }
+        recombination(maxDistrict, i);
     }
 }
 
@@ -145,9 +79,6 @@ void Partition::recombination() {
 
 // Do a recombination of two particular districts
 void Partition::recombination(int districtA, int districtB) {
-    removeDistrictAdjacencies(districtA);
-    removeDistrictAdjacencies(districtB);
-
     // Merging both districts into districtA
     for (int precinct : districtToPrecincts[districtB]) {
         precinctToDistrict[precinct] = districtA;
@@ -159,13 +90,17 @@ void Partition::recombination(int districtA, int districtB) {
     );
     districtToPrecincts[districtB].clear();
 
-    minSpanningTree(districtA, [](int precinct1, int precinct2){
-        return rand();
-    }, 0);
+    if (treeAlgorithm == SpanningTreeAlgorithm::MST) {
+        minSpanningTree(districtA, [](int precinct1, int precinct2){
+            return rand();
+        }, 0);
+    } else if (treeAlgorithm == SpanningTreeAlgorithm::WILSON) {
+        wilsonTree(districtA);
+    }
     int rootPrecinct = districtToPrecincts[districtA][0];
     calculatePopulations(rootPrecinct);
 
-    // Clacluate mst splitting point
+    // Calcuate mst splitting point
     int totalPopulation = populationCache[rootPrecinct];
     int splitPrecinct = rootPrecinct;
     for (int precinct : districtToPrecincts[districtA]) {
@@ -177,6 +112,7 @@ void Partition::recombination(int districtA, int districtB) {
     }
     double maxPopulation = totalPopulation * 0.55;
     double minPopulation = totalPopulation * 0.45;
+    double actualPopulation = populationCache[splitPrecinct];
     if (populationCache[splitPrecinct] > maxPopulation || populationCache[splitPrecinct] < minPopulation) {
         // Some code to cancel the recombination, I'll do this later.
     }
@@ -185,9 +121,6 @@ void Partition::recombination(int districtA, int districtB) {
     districtToPrecincts[districtA].clear();
     dfsRebuild(districtA, rootPrecinct, splitPrecinct);
     dfsRebuild(districtB, splitPrecinct);
-
-    addDistrictAdjacencies(districtA);
-    addDistrictAdjacencies(districtB);
 }
 
 
@@ -232,8 +165,56 @@ void Partition::minSpanningTree(int district, std::function<int(int, int)> getEd
         }
     }
 
+    // Construct treeCache from parentCache
     for (int precinct : districtToPrecincts[district]) {
         if (precinct == startingPrecinct) {
+            if (parentCache[precinct] != -1) {
+                throw std::runtime_error("Root node has parent");
+            }
+        } else {
+            if (parentCache[precinct] == -1) {
+                throw std::runtime_error("Tree is not connected");
+            }
+            treeCache[parentCache[precinct]].push_back(precinct);
+        }
+    }
+}
+
+void Partition::wilsonTree(int district) {
+    for (int precinct : districtToPrecincts[district]) {
+        visitedCache[precinct] = false;
+        parentCache[precinct] = -1;
+        treeCache[precinct].clear();
+    }
+    const vector<vector<int>>& edges = graph->getEdges();
+    int root = districtToPrecincts[district][0];
+    visitedCache[root] = true;
+    for (int pathStart : districtToPrecincts[district]) {
+        if (visitedCache[pathStart]) {
+            continue;
+        }
+        int precinct = pathStart;
+        while (!visitedCache[precinct]) {
+            std::vector<int> neighbors;
+            for (int adj : edges[precinct]) {
+                if (precinctToDistrict[adj] == district) {
+                    neighbors.push_back(adj);
+                }
+            }
+            int neighbor = neighbors[rand() % neighbors.size()];
+            parentCache[precinct] = neighbor;
+            precinct = neighbor;
+        }
+        precinct = pathStart;
+        while (!visitedCache[precinct]) {
+            visitedCache[precinct] = true;
+            precinct = parentCache[precinct];
+        }
+    }
+
+    // Construct treeCache from parentCache
+    for (int precinct : districtToPrecincts[district]) {
+        if (precinct == root) {
             if (parentCache[precinct] != -1) {
                 throw std::runtime_error("Root node has parent");
             }
@@ -318,4 +299,12 @@ float Partition::getMeanMedian() {
 
 vector<vector<int>>& Partition::getTreeCache() {
     return treeCache;
+}
+
+int Partition::getPopulation(int district) {
+    int population = 0;
+    for (int precinct : districtToPrecincts[district]) {
+        population += graph->getPrecincts()[precinct].population;
+    }
+    return population;
 }
