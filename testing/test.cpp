@@ -4,9 +4,36 @@
 #include "../Partition.h"
 
 #include <string>
+#include <stack>
+#include <set>
 
 using std::cout;
 using std::endl;
+using std::stack;
+using std::set;
+
+// Checks tree connectivity
+// Will infinite loop and crash if there is a cycle in the tree
+bool treeIsValid(Partition& partition, int district) {
+    set<int> treeContents;
+    int root = partition.getDistrictPrecincts(district)[0];
+    auto& treeCache = partition.getTreeCache();
+    stack<int> stk;
+    stk.push(root);
+    while (!stk.empty()) {
+        int precinct = stk.top();
+        stk.pop();
+        treeContents.insert(precinct);
+        for (int child : treeCache[precinct]) {
+            stk.push(child);
+        }
+    }
+    set<int> districtContents;
+    for (int precinct : partition.getDistrictPrecincts(district)) {
+        districtContents.insert(precinct);
+    }
+    return treeContents == districtContents;
+}
 
 TEST_CASE("BFS close nodes") {
     Graph graph("cdata.txt");
@@ -57,7 +84,7 @@ TEST_CASE("minSpanningTree() 1") {
     };
     graph.setEdges(edges);
 
-    Partition partition(&graph, 1);
+    Partition partition(&graph, 1, Partition::SpanningTreeAlgorithm::MST);
 
     partition.minSpanningTree(0, [&graph](int precinct1, int precinct2){
         static vector<vector<int>> weights = {
@@ -110,7 +137,7 @@ TEST_CASE("minSpanningTree() edge case 1 node") {
     };
     graph.setEdges(edges);
 
-    Partition partition(&graph, 1);
+    Partition partition(&graph, 1, Partition::SpanningTreeAlgorithm::MST);
 
     partition.minSpanningTree(0, [](int precinct1, int precinct2){
         return 0;
@@ -121,4 +148,37 @@ TEST_CASE("minSpanningTree() edge case 1 node") {
     };
 
     REQUIRE(partition.getTreeCache() == expectedMST);
+}
+
+TEST_CASE("wilsonTree() 1") {
+    // Test that wilsonTree() generates a valid tree
+
+    Graph graph;
+
+    vector<Precinct> precincts = {
+        {0, 0, 0, 0},
+        {1, 0, 0, 0},
+        {2, 0, 0, 0},
+        {3, 0, 0, 0},
+        {4, 0, 0, 0},
+        {5, 0, 0, 0},
+        {6, 0, 0, 0},
+    };
+    graph.setPrecincts(precincts);
+
+    vector<vector<int>> edges = {
+        {1, 4},
+        {0, 3, 5, 6, 2},
+        {1, 6},
+        {1, 4},
+        {0, 3, 5},
+        {4, 1, 6},
+        {5, 1, 2},
+    };
+    graph.setEdges(edges);
+
+    Partition partition(&graph, 1, Partition::SpanningTreeAlgorithm::WILSON);
+    partition.wilsonTree(0);
+
+    REQUIRE(treeIsValid(partition, 0));
 }
