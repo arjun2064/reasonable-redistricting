@@ -21,6 +21,8 @@ class Partition {
         int getPopulation(int district);
 
         vector<vector<int>>& getTreeCache();
+        vector<int>& getDistrictPrecincts(int district);
+        int getPrecinctDistrict(int precinct);
     private:
         Graph* graph;
         int numDistricts;

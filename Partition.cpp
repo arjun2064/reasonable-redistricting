@@ -308,14 +308,22 @@ float Partition::getMeanMedian() {
     return median - mean;
 }
 
-vector<vector<int>>& Partition::getTreeCache() {
-    return treeCache;
-}
-
 int Partition::getPopulation(int district) {
     int population = 0;
     for (int precinct : districtToPrecincts[district]) {
         population += graph->getPrecincts()[precinct].population;
     }
     return population;
+}
+
+vector<vector<int>>& Partition::getTreeCache() {
+    return treeCache;
+}
+
+vector<int>& Partition::getDistrictPrecincts(int district) {
+    return districtToPrecincts[district];
+}
+
+int Partition::getPrecinctDistrict(int precinct) {
+    return precinctToDistrict[precinct];
 }
