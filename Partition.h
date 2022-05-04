@@ -13,7 +13,7 @@ class Partition {
 
         Partition(Graph* graph, int numDistricts, SpanningTreeAlgorithm treeAlgorithm);
         void recombination();
-        void recombination(int districtA, int districtB);
+        bool recombination(int districtA, int districtB, double recombination);
         // calculate mean median score for current partition state
         float getMeanMedian();
         void minSpanningTree(int district, std::function<int(int, int)> getEdgeWeight, int startingPrecinctIdx = 0);
