@@ -15,6 +15,7 @@ class Partition {
         // calculate mean median score for current partition state
         float getMeanMedian();
         void minSpanningTree(int district, std::function<int(int, int)> getEdgeWeight, int startingPrecinctIdx = 0);
+        void wilsonTree(int district);
 
         vector<vector<int>>& getTreeCache();
         
@@ -41,8 +42,6 @@ class Partition {
         void addDistrictAdjacencies(int district);
         void allocateCaches();
 
-        void minSpanningTree(int district);
-        void wilsonTree(int district);
         int calculatePopulations(int precinct);
         void dfsRebuild(int district, int precinct);
         void dfsRebuild(int district, int precinct, int exclude);
