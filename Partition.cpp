@@ -193,12 +193,10 @@ void Partition::wilsonTree(int district) {
             continue;
         }
         int precinct = pathStart;
-        while (true) {
-            int neighbor = edges[precinct][rand() % edges[district].size()];
-            if (visitedCache[neighbor]) {
-                break;
-            }
+        while (!visitedCache[precinct]) {
+            int neighbor = edges[precinct][rand() % edges[precinct].size()];
             parentCache[precinct] = neighbor;
+            precinct = neighbor;
         }
         precinct = pathStart;
         while (!visitedCache[precinct]) {

@@ -13,6 +13,8 @@ int main(int argc, char *argv[]) {
     Graph graph("cdata.txt");
     Partition partition(&graph, 10, Partition::SpanningTreeAlgorithm::MST);
 
+    // partition.recombination();
+
     // dry run to reach equilibrium convergence
     for (int i = 0; i < 20000; ++i) {
         partition.recombination();
@@ -21,9 +23,9 @@ int main(int argc, char *argv[]) {
         }
     }
 
-    std::ofstream fout("mean-median.txt");
-    for (int i = 0; i < 20000; ++i) {
-        partition.recombination();
-        fout << partition.getMeanMedian() << endl;
-    }
+    // std::ofstream fout("mean-median.txt");
+    // for (int i = 0; i < 20000; ++i) {
+    //     partition.recombination();
+    //     fout << partition.getMeanMedian() << endl;
+    // }
 }
