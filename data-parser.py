@@ -1,6 +1,6 @@
 import json
 
-input = open('wisconsin2020_graph.json', 'r')
+input = open('data/wisconsin2020_graph.json', 'r')
 output = open('cdata.txt', 'w')
 data = json.load(input)
 
