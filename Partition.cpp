@@ -159,7 +159,9 @@ void Partition::recombination(int districtA, int districtB) {
     );
     districtToPrecincts[districtB].clear();
 
-    minSpanningTree(districtA);
+    minSpanningTree(districtA, [](int precinct1, int precinct2){
+        return rand();
+    });
     int rootPrecinct = districtToPrecincts[districtA][0];
     calculatePopulations(rootPrecinct);
 
@@ -190,7 +192,7 @@ void Partition::recombination(int districtA, int districtB) {
 
 
 // Calculates the minimum spanning tree of a particular district
-void Partition::minSpanningTree(int district) {
+void Partition::minSpanningTree(int district, std::function<int(int, int)> getEdgeWeight, int startingPrecinctIdx) {
     for (int precinct : districtToPrecincts[district]) {
         visitedCache[precinct] = false;
         keyCache[precinct] = INT_MAX;
@@ -202,7 +204,7 @@ void Partition::minSpanningTree(int district) {
     // pair structure should be (weight, index)
     priority_queue<ipair, vector<ipair>, std::greater<ipair>> pq;
     // Starting precinct is the first precinct in the list
-    int startingPrecinct = districtToPrecincts[district][0];
+    int startingPrecinct = districtToPrecincts[district][startingPrecinctIdx];
     keyCache[startingPrecinct] = 0;
     pq.push(make_pair(keyCache[startingPrecinct], startingPrecinct));
     while (!pq.empty()) {
@@ -220,11 +222,11 @@ void Partition::minSpanningTree(int district) {
                 // of Prim's algorithm, choosing a random weight for the edge on the spot
                 // has the exact same effect as assigning random weights to the graph
                 // prior to running Prim's algorithm.
-                int randomWeight = rand();
-                if (randomWeight < keyCache[neighbor]) {
-                    keyCache[neighbor] = randomWeight;
+                int weight = getEdgeWeight(precinct, neighbor);
+                if (weight < keyCache[neighbor]) {
+                    keyCache[neighbor] = weight;
                     parentCache[neighbor] = precinct;
-                    pq.push(make_pair(randomWeight, neighbor));
+                    pq.push(make_pair(weight, neighbor));
                 }
             }
         }
@@ -312,4 +314,8 @@ float Partition::getMeanMedian() {
     float mean = total/percentageVotes.size();
 
     return median - mean;
+}
+
+vector<vector<int>>& Partition::getTreeCache() {
+    return treeCache;
 }

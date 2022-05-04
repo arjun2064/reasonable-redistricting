@@ -3,6 +3,7 @@
 #include <vector>
 #include <unordered_set>
 #include "Graph.h"
+#include <functional>
 
 using std::vector;
 using std::unordered_set;
@@ -13,6 +14,9 @@ class Partition {
         void recombination(int districtA, int districtB);
         // calculate mean median score for current partition state
         float getMeanMedian();
+        void minSpanningTree(int district, std::function<int(int, int)> getEdgeWeight, int startingPrecinctIdx = 0);
+
+        vector<vector<int>>& getTreeCache();
     private:
         Graph* graph;
         int numDistricts;
@@ -35,7 +39,6 @@ class Partition {
         void addDistrictAdjacencies(int district);
         void allocateCaches();
 
-        void minSpanningTree(int district);
         void uniformSpanningTree(int district);
         int calculatePopulations(int precinct);
         void dfsRebuild(int district, int precinct);
