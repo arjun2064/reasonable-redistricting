@@ -19,15 +19,6 @@ Partition::Partition(Graph* graph, int numDistricts): graph(graph), numDistricts
     randomJoinInitialize();
     initializeDistrictAdjacencies();
     allocateCaches();
-
-    // for (int i = 0; i < graph->numPrecincts(); i++) {
-    //     std::cout << precinctToDistrict[i];
-    // }
-    // for (int i = 0; i < numDistricts; i++) {
-    //     for (int adj : districtAdjacencies[i]) {
-    //         std::cout << "(" << i << ", " << adj << ")" << std::endl;
-    //     }
-    // }
 }
 
 /**
