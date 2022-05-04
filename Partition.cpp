@@ -46,7 +46,7 @@ void Partition::partitionInitialize() {
                 maxPopulation = jPopulation;
             }
         }
-        recombination(maxDistrict, i);
+        recombination(maxDistrict, i, .5);
     }
 }
 
@@ -74,15 +74,17 @@ void Partition::recombination() {
     int district1 = precinctToDistrict[randomEdge.first];
     int district2 = precinctToDistrict[randomEdge.second];
 
-    recombination(district1, district2);
+    while (!recombination(district1, district2, 0.05));
 }
 
 // Do a recombination of two particular districts
-void Partition::recombination(int districtA, int districtB) {
+bool Partition::recombination(int districtA, int districtB, double tolerance) {
     // Merging both districts into districtA
     for (int precinct : districtToPrecincts[districtB]) {
         precinctToDistrict[precinct] = districtA;
     }
+    auto tempA = districtToPrecincts[districtA];
+    auto tempB = districtToPrecincts[districtB];
     districtToPrecincts[districtA].insert(
         districtToPrecincts[districtA].end(),
         districtToPrecincts[districtB].begin(),
@@ -110,17 +112,26 @@ void Partition::recombination(int districtA, int districtB) {
             splitPrecinct = precinct;
         }
     }
-    double maxPopulation = totalPopulation * 0.55;
-    double minPopulation = totalPopulation * 0.45;
+    double maxPopulation = totalPopulation * (0.5+tolerance);
+    double minPopulation = totalPopulation * (0.5-tolerance);
     double actualPopulation = populationCache[splitPrecinct];
     if (populationCache[splitPrecinct] > maxPopulation || populationCache[splitPrecinct] < minPopulation) {
-        // Some code to cancel the recombination, I'll do this later.
+        districtToPrecincts[districtA] = tempA;
+        districtToPrecincts[districtB] = tempB;
+        for (int precinct : tempA) {
+            precinctToDistrict[precinct] = districtA;
+        }
+        for (int precinct : tempB) {
+            precinctToDistrict[precinct] = districtB;
+        }
+        return false;
     }
 
     // Rebuild districts from tree
     districtToPrecincts[districtA].clear();
     dfsRebuild(districtA, rootPrecinct, splitPrecinct);
     dfsRebuild(districtB, splitPrecinct);
+    return true;
 }
 
 
