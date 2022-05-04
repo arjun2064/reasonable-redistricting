@@ -4,3 +4,6 @@
 recombination
 debug
 test
+
+output/
+plots/
