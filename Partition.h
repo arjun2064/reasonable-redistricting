@@ -28,7 +28,6 @@ class Partition {
 
         vector<vector<int>> districtToPrecincts;
         vector<int> precinctToDistrict;
-        vector<unordered_set<int>> districtAdjacencies;
 
         // Some preallocated arrays used as a cache during recombination
         // vector<vector<int>> weights;

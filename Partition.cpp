@@ -37,16 +37,16 @@ void Partition::partitionInitialize() {
         precinctToDistrict[i] = 0;
     }
     for (int i=1; i<numDistricts; i++) {
-        int minDistrict = 0;
-        int minPopulation = getPopulation(0);
+        int maxDistrict = 0;
+        int maxPopulation = getPopulation(0);
         for (int j=1; j<i; j++) {
             int jPopulation = getPopulation(j);
-            if (jPopulation < minPopulation) {
-                minDistrict = j;
-                minPopulation = jPopulation;
+            if (jPopulation > maxPopulation) {
+                maxDistrict = j;
+                maxPopulation = jPopulation;
             }
         }
-        recombination(minDistrict, i);
+        recombination(maxDistrict, i);
     }
 }
 
@@ -100,7 +100,7 @@ void Partition::recombination(int districtA, int districtB) {
     int rootPrecinct = districtToPrecincts[districtA][0];
     calculatePopulations(rootPrecinct);
 
-    // Clacluate mst splitting point
+    // Calcuate mst splitting point
     int totalPopulation = populationCache[rootPrecinct];
     int splitPrecinct = rootPrecinct;
     for (int precinct : districtToPrecincts[districtA]) {
@@ -112,6 +112,7 @@ void Partition::recombination(int districtA, int districtB) {
     }
     double maxPopulation = totalPopulation * 0.55;
     double minPopulation = totalPopulation * 0.45;
+    double actualPopulation = populationCache[splitPrecinct];
     if (populationCache[splitPrecinct] > maxPopulation || populationCache[splitPrecinct] < minPopulation) {
         // Some code to cancel the recombination, I'll do this later.
     }
@@ -194,7 +195,13 @@ void Partition::wilsonTree(int district) {
         }
         int precinct = pathStart;
         while (!visitedCache[precinct]) {
-            int neighbor = edges[precinct][rand() % edges[precinct].size()];
+            std::vector<int> neighbors;
+            for (int adj : edges[precinct]) {
+                if (precinctToDistrict[adj] == district) {
+                    neighbors.push_back(adj);
+                }
+            }
+            int neighbor = neighbors[rand() % neighbors.size()];
             parentCache[precinct] = neighbor;
             precinct = neighbor;
         }
