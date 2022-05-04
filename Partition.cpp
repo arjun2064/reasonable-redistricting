@@ -161,7 +161,7 @@ void Partition::recombination(int districtA, int districtB) {
 
     minSpanningTree(districtA, [](int precinct1, int precinct2){
         return rand();
-    });
+    }, 0);
     int rootPrecinct = districtToPrecincts[districtA][0];
     calculatePopulations(rootPrecinct);
 
