@@ -3,7 +3,15 @@
 ## Algorithms
 
 ### BFS Traversal
-BFS traversal was used to find the degree of separation between separate presincts to ensure that the distribution of precincts in each state district was natural. The traversal took in 2 parameters, being the node that we start at and the node that we end at, usually differing in political leaning. It returned the number of steps to get from the first precinct to the second one. Due to the nature of state distributions, it would be impossible to have a disconnected graph, but measures are taken to prevent the program from breaking in the case of a state with disconnected precincts. ![Wisconsin Precincts](wisconsin.png) The image above shows a the distribution of precincts in Wisconsin which this project attempts to parse into districts. BFS successfully reported the distances between precincts shown here ![BFS Output](bfs_testing.png). These tests include directly linked nodes, random nodes, and unconnected nodes.
+BFS traversal was used to find the degree of separation between separate presincts to ensure that the distribution of precincts in each state district was natural. The traversal took in 2 parameters, being the node that we start at and the node that we end at, usually differing in political leaning. It returned the number of steps to get from the first precinct to the second one. Due to the nature of state distributions, it would be impossible to have a disconnected graph, but measures are taken to prevent the program from breaking in the case of a state with disconnected precincts.
+
+![Wisconsin Precincts](wisconsin.png)
+
+The image above shows a the distribution of precincts in Wisconsin which this project attempts to parse into districts. BFS successfully reported the distances between precincts shown below.
+
+![BFS Output](bfs_testing.png)
+
+These tests include directly linked nodes, random nodes, and unconnected nodes.
 
 ### Minimum Spanning Tree (Covered)
 
