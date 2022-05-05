@@ -2,8 +2,8 @@ CXX = clang++
 
 WARNINGS = -pedantic -Wall -Werror -Wfatal-errors -Wextra -Wno-unused-parameter -Wno-unused-variable -Wno-unused-function
 
-CXXFLAGS = $(CS225) -std=c++14 -O3 $(WARNINGS)
-DEBUGFLAGS = $(CS225) -std=c++14 -O0 $(WARNINGS) -g
+CXXFLAGS = $(CS225) -std=c++11 -O3 $(WARNINGS)
+DEBUGFLAGS = $(CS225) -std=c++11 -O0 $(WARNINGS) -g
 
 CPP_FILES = $(filter-out main.cpp, $(wildcard *.cpp))
 H_FILES = $(wildcard *.h)
