@@ -51,19 +51,4 @@ Comparing the MST implementation to the UST implemenation shows differences in s
 ### Conclusion of Leading Question
 ![Comparing Real Redistricting Proposals](realproposals.png)
 
-
-
-The uniform spanning tree algorithm took in a graph, and from that generated a random spanning tree to ensure the fairness of the distribution
-
-MST and UST will then be used in the ReCom algorithm as follows:
-1. start with a seed partitioning of precincts into n districts
-2. randomly choose 2 districts
-3. merge 2 districts
-4. assign random weights to subgraph
-5. draw minimum spanning tree on subgraph
-6. cut an edge of spanning tree so that resulting partitions have balanced populations
-7. calculate metric for current plan eg. democratic/republican
-8. record this sample plan and metric
-9. repeat step 2 for k samples
-10. plot all samples on graph of number of plans against metric eg. how democratic/republican leaning a plan is.
-11. obtain an ideal redistricting plan from the mean of this distribution. we can also compare proposed plans to this distribution to indicate if there's gerrymandering
+Given the image above, our algorithm can divide up a states voting presincts in an unbiased way as well as detect any potential gerrymandering that is occuring. The peak of the bell curve above represents a neutral unbiased distribution of voting districts which most recombinations would result in. Comparing these results to some real life proposals, cases of bias towards either democratic or republican parties are visible. The 538DEM proposal is considerable far from a neutral distribution and shows gerrymandering for democrat biased districts. Similarly, the 538GOP proposal skews towards a more republican biased redistricting. 538CMPCT shows a plan that was designed to be more compact and unbiased, and is placement on the graph is more in line with fair districting although it is likely that this plan could occur naturally. Finally, the governor's plan that was implemented occurs at the peak of the histogram. With this graphic, a porbability can be assigned to the likelyhood of each plan occuring and the degree of bias each plan has.
