@@ -47,6 +47,7 @@ make debug && ./debug
 
 
 ## Code Organization
+- `data` for input data for algorithms
 - `output` for output data from algorithms
 - `plots` for plots created by postprocessing matplotlib
 - `testing` for all testing code
